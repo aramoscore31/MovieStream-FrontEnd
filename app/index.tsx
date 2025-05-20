@@ -1,5 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { FavoritesProvider } from '@/src/components/FavoritesContext';
 import HomeScreen from '../src/screens/HomeScreen';
 import LoginScreen from '../src/screens/LoginScreen';
 import RegisterScreen from '../src/screens/RegisterScreen';
@@ -43,25 +44,26 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 export default function AppNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
-      <Stack.Screen name="Recommendations" component={RecommendationsScreen} />
-      <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
-      <Stack.Screen name="Help" component={HelpScreen} />
-      <Stack.Screen name="Admin" component={AdminUsersScreen} />
-      <Stack.Screen name="MovieDetails" component={MovieDetails} />
-      <Stack.Screen name="Favorites" component={FavoritesScreen} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="ShoppingCart" component={ShoppingCartScreen} />
-      <Stack.Screen name="BoughtTickets" component={BoughtTickets} />
-      <Stack.Screen name="Categories" component={CategoriasScreen} />
-      <Stack.Screen name="EventsByCategoryScreen" component={EventsByCategoryScreen} /> 
-      <Stack.Screen name="AdminPanel" component={AdminPanel} />
-      <Stack.Screen name="EditEvent" component={EditEventScreen} />
-      <Stack.Screen name="OrganizerRequestScreen" component={OrganizerRequestScreen} />
-
-    </Stack.Navigator>
+    <FavoritesProvider> {/* Encapsula el AppNavigator dentro del FavoritesProvider */}
+      <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="Recommendations" component={RecommendationsScreen} />
+        <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
+        <Stack.Screen name="Help" component={HelpScreen} />
+        <Stack.Screen name="Admin" component={AdminUsersScreen} />
+        <Stack.Screen name="MovieDetails" component={MovieDetails} />
+        <Stack.Screen name="Favorites" component={FavoritesScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="ShoppingCart" component={ShoppingCartScreen} />
+        <Stack.Screen name="BoughtTickets" component={BoughtTickets} />
+        <Stack.Screen name="Categories" component={CategoriasScreen} />
+        <Stack.Screen name="EventsByCategoryScreen" component={EventsByCategoryScreen} />
+        <Stack.Screen name="AdminPanel" component={AdminPanel} />
+        <Stack.Screen name="EditEvent" component={EditEventScreen} />
+        <Stack.Screen name="OrganizerRequestScreen" component={OrganizerRequestScreen} />
+      </Stack.Navigator>
+    </FavoritesProvider>
   );
 }

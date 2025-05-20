@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     marginVertical: 10,
-    color: 'white',
+    color: '',
   },
   profileInfo: {
     fontSize: 18,
@@ -28,6 +28,7 @@ export const styles = StyleSheet.create({
   },
 
   button: {
+    backgroundColor: '#3498db',
     paddingVertical: 12,
     marginBottom: 15,
     borderRadius: 8,
@@ -39,7 +40,6 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5,
   },
-
   buttonText: {
     color: 'white',
     fontSize: 16,

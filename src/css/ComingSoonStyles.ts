@@ -7,6 +7,22 @@ export const ComingSoonStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#3e3e3e',
   },
+  headerContainer: {
+    backgroundColor: '#2C2C2C',
+    padding: 15,
+    marginBottom: 10,
+    borderTopWidth: 1,
+    borderTopColor: 'white',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -20,10 +36,10 @@ export const ComingSoonStyles = StyleSheet.create({
   },
   event: {
     flexDirection: 'row',
-    marginBottom: 10,
+    marginBottom: 20,
     backgroundColor: '#34495e',
     borderRadius: 10,
-    padding: 10,
+    padding: 15,
     alignItems: 'center',
     maxHeight: 200,
     shadowColor: '#000',
@@ -34,65 +50,41 @@ export const ComingSoonStyles = StyleSheet.create({
     marginHorizontal: 15,
   },
   eventImageContainer: {
-    width: 85,
-    height: 85,
+    width: 120,
+    height: 180,
     borderRadius: 10,
     overflow: 'hidden',
     marginRight: 15,
   },
   eventImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
+    width: 100,
+    height: 120,
+    borderRadius: 5,
   },
   eventDetails: {
     flex: 1,
+    justifyContent: 'space-between',
+    marginLeft: 30,
   },
   eventTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
-  },
-  eventMeta: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 3,
-  },
-  dateContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 15,
+    marginBottom: 5,
   },
   eventDate: {
-    fontSize: 12,
-    color: 'red',
-    marginLeft: 5,
-  },
-  locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 15,
-    marginTop: 5,
-  },
-  
-  eventLocation: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#bdc3c7',
-    marginBottom: 4,
   },
-  ticketsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  eventTickets: {
-    fontSize: 12,
-    color: '#3498db',
-    marginLeft: 5,
+  eventLocation: {
+    fontSize: 14,
+    color: '#bdc3c7',
+    marginBottom: 10,
   },
   favoriteIcon: {
-    marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 10,
   },
   favoriteIconActive: {
     color: '#FFD700',
@@ -113,7 +105,7 @@ export const ComingSoonStyles = StyleSheet.create({
   filterButtonText: {
     color: '#fff',
     fontSize: 16,
-  },  
+  },
   pastEvent: {
     backgroundColor: '#e0e0e0',  // Fondo gris claro para los eventos pasados
     borderColor: '#bdbdbd',  // Borde gris más oscuro
@@ -189,4 +181,9 @@ export const ComingSoonStyles = StyleSheet.create({
     borderColor: '#90A4AE',
     transform: [{ scale: 0.98 }],  // Efecto de reducción para el click
   },
+  eventStars: {
+  flexDirection: 'row', // Asegúrate de que las estrellas estén alineadas horizontalmente
+  marginTop: 5,
+}
+
 });

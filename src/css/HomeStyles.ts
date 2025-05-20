@@ -127,6 +127,48 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 8,
   },
+  walletContainer: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    padding: 10,
+    borderRadius: 20,
+  },
+  walletText: {
+    color: 'white',
+    marginRight: 10,
+  },
+  addMoneyContainer: {
+    position: 'absolute',
+    top: 70,
+    right: 20,
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+  },
+  addMoneyInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  addMoneyButton: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 5,
+  },
+  addMoneyButtonText: {
+    color: 'white',
+    textAlign: 'center',
+  },  
 });
 
 export default styles;

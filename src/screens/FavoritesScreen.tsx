@@ -5,39 +5,55 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { ComingSoonStyles } from '../css/ComingSoonStyles';
 import Header from '../components/Header';
-import BottomNav from '../components/BottomNav';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../app/index';
 
-interface Event {
+interface MovieData {
   id: number;
   title: string;
-  description: string;
-  date: string;
-  soldTickets: number;
-  availableTickets: number;
-  imageUrl: string;
-  localizacion: string;
-  price: number;
-  organizerUsername: string;
-  eventUrl: string;
-  categories: string[];
+  year: string;
+  genre: string;
+  director: string;
+  actors: string;
+  plot: string;
+  language: string | null;
+  country: string | null;
+  posterUrl: string;
+  imdbRating: string; // IMDb rating
+  imdbID: string;
+  filePath: string;
 }
 
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  const options: Intl.DateTimeFormatOptions = {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  };
-  return new Intl.DateTimeFormat('es-ES', options).format(date);
+// Función para convertir la calificación a estrellas sobre 5
+const renderStars = (rating: string) => {
+  const stars = [];
+  const ratingValue = parseFloat(rating);
+  const maxRating = 10;
+  const starsOutOfFive = (ratingValue / maxRating) * 5; // Convertir la calificación a una escala de 5 estrellas
+  const fullStars = Math.floor(starsOutOfFive);
+  const halfStar = starsOutOfFive % 1 >= 0.5 ? 1 : 0;
+  const emptyStars = 5 - fullStars - halfStar;
+
+  // Llenar las estrellas completas
+  for (let i = 0; i < fullStars; i++) {
+    stars.push(<FontAwesome key={`full-${i}`} name="star" size={18} color="#FFD700" />);
+  }
+  
+  // Llenar la media estrella si existe
+  if (halfStar) {
+    stars.push(<FontAwesome key="half" name="star-half-o" size={18} color="#FFD700" />);
+  }
+  
+  // Llenar las estrellas vacías
+  for (let i = 0; i < emptyStars; i++) {
+    stars.push(<FontAwesome key={`empty-${i}`} name="star-o" size={18} color="#FFD700" />);
+  }
+
+  return stars;
 };
 
 const FavoritesScreen = () => {
-  const [favorites, setFavorites] = useState<Event[]>([]);
+  const [favorites, setFavorites] = useState<MovieData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -48,59 +64,20 @@ const FavoritesScreen = () => {
     setLoading(true);
     setError(null);
     try {
-      const token = await AsyncStorage.getItem('token');
-      const response = await fetch('http://192.168.1.87:8080/api/events/favorites/list', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) throw new Error('Failed to load favorite events');
-
-      const favoriteEventIds: number[] = await response.json();
-
-      const eventDetailsPromises = favoriteEventIds.map(async (eventId: number) => {
-        const eventResponse = await fetch(`http://192.168.1.87:8080/api/events/${eventId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        return eventResponse.json();
-      });
-
-      const eventsDetails: Event[] = await Promise.all(eventDetailsPromises);
-      setFavorites(eventsDetails);
-
+      const storedFavorites = await AsyncStorage.getItem('favorites');
+      if (storedFavorites) {
+        setFavorites(JSON.parse(storedFavorites));
+      }
     } catch (error) {
+      setError('Error loading favorites');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleRemoveFavorite = async (eventId: number) => {
-    const updatedFavorites = favorites.filter((event) => event.id !== eventId);
-    setFavorites(updatedFavorites);
-
-    try {
-      const token = await AsyncStorage.getItem('token');
-      const response = await fetch(`http://192.168.1.87:8080/api/events/favorites/remove/${eventId}`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) throw new Error('Failed to remove favorite');
-    } catch (error) {
-      setError('Error removing favorite. Please try again later.');
-      setFavorites(favorites);
-    } finally {
-      fetchFavorites();
-    }
-  };
-
   useEffect(() => {
     fetchFavorites();
+
     const getUserData = async () => {
       const storedUsername = await AsyncStorage.getItem('username');
       const storedRole = await AsyncStorage.getItem('role');
@@ -110,16 +87,51 @@ const FavoritesScreen = () => {
     getUserData();
   }, []);
 
+  const handleRemoveFavorite = async (movieId: number) => {
+    const updatedFavorites = favorites.filter((movie) => movie.id !== movieId);
+    setFavorites(updatedFavorites);
+
+    try {
+      await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+    } catch (error) {
+      console.error('Error saving favorites:', error);
+    }
+  };
+
   if (loading) {
     return <ActivityIndicator size="large" color="#3498db" />;
   }
 
+  const renderMovieItem = ({ item }: { item: MovieData }) => {
+    return (
+      <TouchableOpacity
+        onPress={() => navigation.navigate('MovieDetails', { movie: item })}
+        style={ComingSoonStyles.event}
+      >
+        <Image 
+          source={{ uri: item.posterUrl }} 
+          style={ComingSoonStyles.eventImage} 
+        />
+        <View style={ComingSoonStyles.eventDetails}>
+          <Text style={ComingSoonStyles.eventTitle}>{item.title}</Text>
+          <Text style={ComingSoonStyles.eventDate}>{item.year}</Text>
+          {/* Mostrar las estrellas de IMDb */}
+          <View style={ComingSoonStyles.eventStars}>
+            {renderStars(item.imdbRating)}
+          </View>
+        </View>
+        <TouchableOpacity onPress={() => handleRemoveFavorite(item.id)} style={ComingSoonStyles.favoriteIcon}>
+          <FontAwesome name="star" size={25} color="red" />
+        </TouchableOpacity>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={ComingSoonStyles.container}>
       <Header navigation={navigation} username={username || ''} />
-
-      <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#2C2C2C', padding: 15, marginBottom: 10, borderTopWidth: 1, borderTopColor: 'white' }}>
-        <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', textAlign: 'center', alignItems: 'center', textAlignVertical: 'center', flex: 1 }}>Mis Favoritos</Text>
+      <View style={ComingSoonStyles.headerContainer}>
+        <Text style={ComingSoonStyles.headerText}>Mis Favoritos</Text>
       </View>
 
       {error && <Text style={{ color: 'red', textAlign: 'center', marginVertical: 10 }}>{error}</Text>}
@@ -130,43 +142,7 @@ const FavoritesScreen = () => {
         <FlatList
           data={favorites}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => {
-            const formattedDate = formatDate(item.date);
-            return (
-              <View style={ComingSoonStyles.event}>
-                <View style={ComingSoonStyles.eventImageContainer}>
-                  <Image
-                    source={{ uri: `http://192.168.1.87:8080/uploaded-images/${item.imageUrl}` }}
-                    style={ComingSoonStyles.eventImage}
-                  />
-                </View>
-                <View style={ComingSoonStyles.eventDetails}>
-                  <Text style={ComingSoonStyles.eventTitle}>{item.title}</Text>
-                  <View style={ComingSoonStyles.locationContainer}>
-                    <Text style={ComingSoonStyles.eventLocation}>
-                      {item.localizacion || 'Ubicación no disponible'}
-                    </Text>
-                  </View>
-                  <View style={ComingSoonStyles.eventMeta}>
-                    <View style={ComingSoonStyles.dateContainer}>
-                      <FontAwesome name="calendar" size={12} color="red" />
-                      <Text style={ComingSoonStyles.eventDate}>{formattedDate}</Text>
-                    </View>
-                    <View style={ComingSoonStyles.ticketsContainer}>
-                      <FontAwesome name="ticket" size={12} color="#3498db" />
-                      <Text style={ComingSoonStyles.eventTickets}>{item.availableTickets}</Text>
-                    </View>
-                  </View>
-                </View>
-                <TouchableOpacity
-                  onPress={() => handleRemoveFavorite(item.id)}
-                  style={ComingSoonStyles.favoriteIcon}
-                >
-                  <FontAwesome name="star" size={25} color={ComingSoonStyles.favoriteIconActive.color} />
-                </TouchableOpacity>
-              </View>
-            );
-          }}
+          renderItem={renderMovieItem}
         />
       )}
     </View>
