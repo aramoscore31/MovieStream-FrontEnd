@@ -142,16 +142,14 @@ export const ComingSoonStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  // Efecto hover para el botón En curso
   ongoingButtonPressed: {
-    backgroundColor: '#2874A6', // Cambio de color cuando el botón es presionado
+    backgroundColor: '#2874A6', 
     borderColor: '#2874A6',
-    transform: [{ scale: 0.98 }],  // Efecto de reducción para el click
+    transform: [{ scale: 0.98 }], 
   },
 
-  // Botón Finalizadas
   completedButton: {
-    backgroundColor: '#B0BEC5',  // Gris suave para "Finalizadas"
+    backgroundColor: '#B0BEC5',
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 30,
@@ -175,14 +173,13 @@ export const ComingSoonStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  // Efecto hover para el botón Finalizadas
   completedButtonPressed: {
-    backgroundColor: '#90A4AE',  // Cambio de color cuando el botón es presionado
+    backgroundColor: '#90A4AE',
     borderColor: '#90A4AE',
-    transform: [{ scale: 0.98 }],  // Efecto de reducción para el click
+    transform: [{ scale: 0.98 }],
   },
   eventStars: {
-  flexDirection: 'row', // Asegúrate de que las estrellas estén alineadas horizontalmente
+  flexDirection: 'row',
   marginTop: 5,
 }
 

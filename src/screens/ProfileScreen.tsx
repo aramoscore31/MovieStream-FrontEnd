@@ -56,8 +56,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                 setUsername(data.username);
                 setRole(data.role);
                 setEmail(data.email);
+                setWalletBalance(data.balance);
                 // Asegúrate de convertir el saldo a número
-                setWalletBalance(Number(data.walletBalance) || 0); // Convertir a número, en caso de que sea null o undefined
+                setWalletBalance(Number(data.balance) || 0); // Convertir a número, en caso de que sea null o undefined
             } else {
                 Alert.alert('Error', 'No se pudo cargar los datos del perfil.');
             }
@@ -73,10 +74,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         await AsyncStorage.removeItem('token');
         await AsyncStorage.removeItem('username');
         await AsyncStorage.removeItem('role');
+        await AsyncStorage.removeItem('balance')
 
         setUsername(null);
         setRole(null);
         setEmail(null);
+        setWalletBalance(0);
         setShowRecommendationBar(false);
         navigation.navigate('Login');
     };
@@ -173,20 +176,55 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         }
     };
 
+    // Función para obtener el saldo
+    const fetchWalletBalance = async () => {
+        const token = await AsyncStorage.getItem('token');
+        if (!token) {
+            Alert.alert('Error', 'Por favor inicie sesión.');
+            return;
+        }
+    
+        try {
+            const response = await fetch('http://192.168.1.87:8080/api/wallet/balance', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                
+            });
+    
+            if (response.ok) {
+                const balance = await response.json(); // Se espera que devuelva el saldo como un número
+                console.log('Saldo recibido desde el backend:', balance);  // Agrega este log para verificar el valor
+                setWalletBalance(balance); // Actualizamos el saldo
+            } else {
+                Alert.alert('Error', 'No se pudo obtener el saldo.');
+            }
+        } catch (error) {
+            console.error('Error fetching wallet balance:', error);
+            Alert.alert('Error', 'Hubo un problema al obtener el saldo.');
+        }
+    };
+    
+
     // Función para agregar dinero al monedero
     const handleAddMoney = async () => {
-        const amount = parseFloat(addMoneyInput);
+        // Reemplazar las comas con puntos en el input
+        const amountString = addMoneyInput.replace(',', '.');
+        const amount = parseFloat(amountString);
+    
         if (isNaN(amount) || amount <= 0) {
             Alert.alert('Error', 'Por favor ingresa una cantidad válida.');
             return;
         }
-
+    
         const token = await AsyncStorage.getItem('token');
         if (!token) {
             Alert.alert('Error', 'Por favor, inicie sesión nuevamente.');
             return;
         }
-
+    
         try {
             const response = await fetch('http://192.168.1.87:8080/api/wallet/add', {
                 method: 'POST',
@@ -195,24 +233,24 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userId: 1, // Reemplazar con el ID real del usuario
                     amount: amount,
                 }),
             });
-
+    
             if (response.ok) {
                 const data = await response.json();
-                setWalletBalance(data.walletBalance); // Actualizamos el saldo
-                setAddMoneyInput(''); // Limpiamos el campo
+                getUserData(token); // Actualizamos el saldo en la UI
+                setAddMoneyInput(''); // Limpiamos el campo de entrada
                 Alert.alert('Éxito', 'Saldo agregado correctamente.');
             } else {
                 Alert.alert('Error', 'No se pudo agregar el saldo.');
             }
         } catch (err) {
-            console.error('Error al agregar saldo:', err);
-            Alert.alert('Error', 'Hubo un problema al agregar saldo.');
+            getUserData(token);
         }
     };
+    
+    
 
     const renderRecommendationBar = () => {
         if (!showRecommendationBar) return null;

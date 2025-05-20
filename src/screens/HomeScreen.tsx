@@ -1,16 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  FlatList,
-  TouchableOpacity,
-  Animated,
-  Dimensions,
-  TextInput,
-  Alert,
-} from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { View, Text, Image, FlatList, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import { Fontisto } from '@expo/vector-icons'; // Using Fontisto for the favorite icon
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -59,9 +49,6 @@ const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState<MovieData[]>([]);
   const [favorites, setFavorites] = useState<MovieData[]>([]);
-  const [walletBalance, setWalletBalance] = useState<number>(0);
-  const [addMoneyInput, setAddMoneyInput] = useState<string>('');
-  const [isAddingMoney, setIsAddingMoney] = useState<boolean>(false);
 
   const opacity = useState(new Animated.Value(1))[0];
 
@@ -96,10 +83,6 @@ const HomeScreen = () => {
       if (storedUsername) setUsername(storedUsername);
       if (storedRole) setRole(storedRole);
 
-      // Cargar saldo del monedero
-      const storedBalance = await AsyncStorage.getItem('walletBalance');
-      if (storedBalance) setWalletBalance(Number(storedBalance));
-
       setLoading(false);
     };
 
@@ -128,38 +111,23 @@ const HomeScreen = () => {
     }
   };
 
-  const handleAddMoney = async () => {
-    const amount = parseFloat(addMoneyInput);
-    if (isNaN(amount) || amount <= 0) {
-      Alert.alert('Error', 'Por favor ingresa una cantidad válida.');
-      return;
-    }
-
-    // Actualizamos el saldo en el estado
-    const newBalance = walletBalance + amount;
-    setWalletBalance(newBalance);
-
-    // Guardamos el nuevo saldo en AsyncStorage
-    try {
-      await AsyncStorage.setItem('walletBalance', newBalance.toString());
-      setAddMoneyInput(''); // Limpiamos el campo de texto
-      setIsAddingMoney(false); // Ocultamos el formulario
-    } catch (error) {
-      console.error('Error al guardar el saldo en AsyncStorage:', error);
-    }
-  };
-
   const renderMovieItem = ({ item }: { item: MovieData }) => {
     const isFavorite = favorites.some(fav => fav.id === item.id);
     return (
       <TouchableOpacity style={styles.movieContainer} onPress={handleMoviePress(item)}>
         <View style={styles.movieImageContainer}>
           <Image source={{ uri: item.posterUrl }} style={styles.movieImage} />
-          <TouchableOpacity onPress={() => toggleFavorite(item)} style={styles.favoriteIcon}>
-            <FontAwesome
-              name={isFavorite ? 'heart' : 'heart-o'}
-              size={24}
-              color={isFavorite ? 'red' : 'white'}
+          <TouchableOpacity 
+            onPress={() => toggleFavorite(item)} 
+            style={[
+              styles.favoriteIcon,
+              { opacity: isFavorite ? 1 : 0.5 } // Make it slightly transparent when not a favorite
+            ]}
+          >
+            <Fontisto
+              name="favorite" // Fontisto icon for the favorite
+              size={30}
+              color={isFavorite ? 'red' : 'white'} // Change color when favorite
             />
           </TouchableOpacity>
         </View>
@@ -185,28 +153,7 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <View style={styles.fixedHeader}>
         <Header navigation={navigation} username={username || ''} />
-        <View style={styles.walletContainer}>
-          <Text style={styles.walletText}>Saldo: ${walletBalance.toFixed(2)}</Text>
-          <TouchableOpacity onPress={() => setIsAddingMoney(!isAddingMoney)}>
-            <FontAwesome name="plus-circle" size={30} color="white" />
-          </TouchableOpacity>
-        </View>
       </View>
-
-      {isAddingMoney && (
-        <View style={styles.addMoneyContainer}>
-          <TextInput
-            style={styles.addMoneyInput}
-            value={addMoneyInput}
-            onChangeText={setAddMoneyInput}
-            keyboardType="numeric"
-            placeholder="Ingrese monto"
-          />
-          <TouchableOpacity onPress={handleAddMoney} style={styles.addMoneyButton}>
-            <Text style={styles.addMoneyButtonText}>Agregar dinero</Text>
-          </TouchableOpacity>
-        </View>
-      )}
 
       <FlatList
         ListHeaderComponent={

@@ -74,9 +74,10 @@ export const styles = StyleSheet.create({
 
   favoriteIcon: {
     position: 'absolute',
-    top: 10,
     left: 10,
+    top: -1,
     zIndex: 1,
+    opacity: 0.5,
   },
 
   movieTitle: {
@@ -168,7 +169,7 @@ export const styles = StyleSheet.create({
   addMoneyButtonText: {
     color: 'white',
     textAlign: 'center',
-  },  
+  },
 });
 
 export default styles;
