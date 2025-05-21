@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image, FlatList, TouchableOpacity, Animated, Dimensions } from 'react-native';
-import { Fontisto } from '@expo/vector-icons'; // Using Fontisto for the favorite icon
+import { Fontisto } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -52,7 +52,6 @@ const HomeScreen = () => {
 
   const opacity = useState(new Animated.Value(1))[0];
 
-  // Fetch movies
   const fetchMovies = async () => {
     try {
       const response = await fetch('http://192.168.1.87:8080/movies/list');
@@ -121,13 +120,13 @@ const HomeScreen = () => {
             onPress={() => toggleFavorite(item)} 
             style={[
               styles.favoriteIcon,
-              { opacity: isFavorite ? 1 : 0.5 } // Make it slightly transparent when not a favorite
+              { opacity: isFavorite ? 1 : 0.5 }
             ]}
           >
             <Fontisto
-              name="favorite" // Fontisto icon for the favorite
+              name="favorite"
               size={30}
-              color={isFavorite ? 'red' : 'white'} // Change color when favorite
+              color={isFavorite ? 'red' : 'white'}
             />
           </TouchableOpacity>
         </View>

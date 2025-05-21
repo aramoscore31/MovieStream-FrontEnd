@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: '#3498db',
+    backgroundColor: 'black',
     paddingVertical: 12,
     marginBottom: 15,
     borderRadius: 8,
@@ -48,13 +48,13 @@ export const styles = StyleSheet.create({
 
   input: {
     height: 50,
-    borderColor: '#3498db',
+    borderColor: 'black',
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 10,
     fontSize: 16,
-    color: '#2c3e50',
+    color: '#7f8c8d',
     backgroundColor: '#f4f4f4',
   },
 

@@ -8,7 +8,6 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { ComingSoonStyles } from '../css/ComingSoonStyles';
 import { RootStackParamList } from '../../app/index';
 import Header from '../components/Header';
-import BottomNav from '../components/BottomNav';
 
 const BoughtTickets = () => {
   const [tickets, setTickets] = useState<any[]>([]);  
@@ -187,7 +186,6 @@ const BoughtTickets = () => {
         </Modal>
       )}
 
-      <BottomNav navigation={navigation} role={role || ''} />
     </View>
   );
 };

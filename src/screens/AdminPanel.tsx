@@ -4,7 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesome } from '@expo/vector-icons';
 import { ComingSoonStyles } from '../css/ComingSoonStyles';
 import Header from '../components/Header';
-import BottomNav from '../components/BottomNav';
 
 const AdminPanel = ({ navigation }) => {
   const [events, setEvents] = useState([]);
@@ -117,7 +116,6 @@ const AdminPanel = ({ navigation }) => {
         />
       )}
 
-      <BottomNav navigation={navigation} role={role || ''} />
     </View>
   );
 };

@@ -19,8 +19,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     const [email, setEmail] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [showRecommendationBar, setShowRecommendationBar] = useState(false);
-    const [walletBalance, setWalletBalance] = useState<number>(0); // Estado para el saldo, inicializado en 0
-    const [addMoneyInput, setAddMoneyInput] = useState<string>(''); // Entrada para agregar dinero
+    const [walletBalance, setWalletBalance] = useState<number>(0);
+    const [addMoneyInput, setAddMoneyInput] = useState<string>('');
 
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -57,8 +57,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                 setRole(data.role);
                 setEmail(data.email);
                 setWalletBalance(data.balance);
-                // Asegúrate de convertir el saldo a número
-                setWalletBalance(Number(data.balance) || 0); // Convertir a número, en caso de que sea null o undefined
+                setWalletBalance(Number(data.balance) || 0);
             } else {
                 Alert.alert('Error', 'No se pudo cargar los datos del perfil.');
             }
@@ -195,9 +194,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             });
     
             if (response.ok) {
-                const balance = await response.json(); // Se espera que devuelva el saldo como un número
-                console.log('Saldo recibido desde el backend:', balance);  // Agrega este log para verificar el valor
-                setWalletBalance(balance); // Actualizamos el saldo
+                const balance = await response.json();
+                console.log('Saldo recibido desde el backend:', balance);
+                setWalletBalance(balance);
             } else {
                 Alert.alert('Error', 'No se pudo obtener el saldo.');
             }
@@ -208,9 +207,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     };
     
 
-    // Función para agregar dinero al monedero
     const handleAddMoney = async () => {
-        // Reemplazar las comas con puntos en el input
         const amountString = addMoneyInput.replace(',', '.');
         const amount = parseFloat(amountString);
     
@@ -239,8 +236,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     
             if (response.ok) {
                 const data = await response.json();
-                getUserData(token); // Actualizamos el saldo en la UI
-                setAddMoneyInput(''); // Limpiamos el campo de entrada
+                getUserData(token);
+                setAddMoneyInput('');
                 Alert.alert('Éxito', 'Saldo agregado correctamente.');
             } else {
                 Alert.alert('Error', 'No se pudo agregar el saldo.');
@@ -248,43 +245,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         } catch (err) {
             getUserData(token);
         }
-    };
-    
-    
-
-    const renderRecommendationBar = () => {
-        if (!showRecommendationBar) return null;
-        return (
-            <View style={styles.recommendationBar}>
-                <TouchableOpacity
-                    style={styles.recommendationButton}
-                    onPress={() => {
-                        setShowRecommendationBar(false);
-                        navigation.navigate('Recommendations');
-                    }}
-                >
-                    <Text style={styles.recommendationButtonText}>Te recomendamos</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.recommendationButton}
-                    onPress={() => {
-                        setShowRecommendationBar(false);
-                        navigation.navigate('ComingSoon');
-                    }}
-                >
-                    <Text style={styles.recommendationButtonText}>Proximamente</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.recommendationButton}
-                    onPress={() => {
-                        setShowRecommendationBar(false);
-                        navigation.navigate('Help');
-                    }}
-                >
-                    <Text style={styles.recommendationButtonText}>Ayudas</Text>
-                </TouchableOpacity>
-            </View>
-        );
     };
 
     const renderProfileDetails = () => (
@@ -294,10 +254,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             <Text style={styles.profileInfo}>Rol: {role}</Text>
             <Text style={styles.profileInfo}>Saldo: ${walletBalance.toFixed(2)}</Text>
 
-            {/* Sección para recargar saldo */}
             <TextInput
                 style={styles.input}
-                placeholder="Monto a agregar"
+                placeholder="Cantidad a agregar"
                 keyboardType="numeric"
                 value={addMoneyInput}
                 onChangeText={setAddMoneyInput}
@@ -349,35 +308,14 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             <TouchableOpacity onPress={handleLogout} style={styles.button}>
                 <Text style={styles.buttonText}>Cerrar Sesión</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('OrganizerRequestScreen')} style={styles.button}>
-                <Text style={styles.buttonText}>Solicitar ser organizador</Text>
-            </TouchableOpacity>
 
         </View>
     );
 
     return (
         <View style={styles.container}>
-            <Header navigation={navigation} username={username || ''} />
-            {renderRecommendationBar()}
-            <View style={styles.mainContent}>
-                {loading ? (
-                    <ActivityIndicator size="large" color="#3498db" />
-                ) : username ? (
-                    renderProfileDetails()
-                ) : (
-                    <View>
-                        <Text style={styles.profileTitle}>¡Bienvenido!</Text>
-                        <Text style={styles.profileInfo}>No has iniciado sesión</Text>
-                        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.button}>
-                            <Text style={styles.buttonText}>Iniciar sesión</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate('Register')} style={styles.button}>
-                            <Text style={styles.buttonText}>Registrarse</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-            </View>
+            <Header navigation={navigation} username={username} />
+            {renderProfileDetails()}
         </View>
     );
 };

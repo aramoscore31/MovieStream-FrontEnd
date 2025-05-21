@@ -107,8 +107,8 @@ export const ComingSoonStyles = StyleSheet.create({
     fontSize: 16,
   },
   pastEvent: {
-    backgroundColor: '#e0e0e0',  // Fondo gris claro para los eventos pasados
-    borderColor: '#bdbdbd',  // Borde gris más oscuro
+    backgroundColor: '#e0e0e0',
+    borderColor: '#bdbdbd',
     borderWidth: 1,
   },
   pastEventText: {
@@ -118,7 +118,7 @@ export const ComingSoonStyles = StyleSheet.create({
     marginTop: 5,
   },
   ongoingButton: {
-    backgroundColor: '#3498db',  // Azul vibrante para "En curso"
+    backgroundColor: '#3498db',
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 30,
