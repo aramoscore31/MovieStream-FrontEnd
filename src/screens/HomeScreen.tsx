@@ -74,6 +74,40 @@ const HomeScreen = () => {
       fetchMovies();
     }, [])
   );
+  useEffect(() => {
+    const loadFavorites = async () => {
+      try {
+        const storedFavorites = await AsyncStorage.getItem('favorites');
+        if (storedFavorites) {
+          setFavorites(JSON.parse(storedFavorites));
+        }
+      } catch (error) {
+        console.error('Error al cargar los favoritos:', error);
+      }
+    };
+
+    loadFavorites(); // Cargar los favoritos
+    fetchMovies();   // Cargar las películas
+  }, []);
+
+  const toggleFavorite = async (movie: MovieData) => {
+    let updatedFavorites = [...favorites];
+    const movieIndex = favorites.findIndex(fav => fav.id === movie.id);
+
+    if (movieIndex !== -1) {
+      updatedFavorites.splice(movieIndex, 1);
+    } else {
+      updatedFavorites.push(movie);
+    }
+
+    try {
+      // Guardar los favoritos actualizados en AsyncStorage
+      await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+      setFavorites(updatedFavorites);  // Actualizar el estado local
+    } catch (error) {
+      console.error('Error al guardar los favoritos:', error);
+    }
+  };
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -90,24 +124,6 @@ const HomeScreen = () => {
 
   const handleMoviePress = (item: MovieData) => () => {
     navigation.navigate('MovieDetails', { movie: item });
-  };
-
-  const toggleFavorite = async (movie: MovieData) => {
-    let updatedFavorites = [...favorites];
-    const movieIndex = favorites.findIndex(fav => fav.id === movie.id);
-
-    if (movieIndex !== -1) {
-      updatedFavorites.splice(movieIndex, 1);
-    } else {
-      updatedFavorites.push(movie);
-    }
-
-    try {
-      await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-      setFavorites(updatedFavorites); 
-    } catch (error) {
-      console.error('Error saving favorites:', error);
-    }
   };
 
   const renderMovieItem = ({ item }: { item: MovieData }) => {
