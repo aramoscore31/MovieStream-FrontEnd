@@ -8,7 +8,12 @@ export const styles = StyleSheet.create({
     backgroundColor: 'black',
     position: 'relative',
   },
-
+  successText: {  // Este es el nuevo estilo que has mencionado
+    color: 'green',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
   mainContent: {
     flex: 1,
     padding: 20,

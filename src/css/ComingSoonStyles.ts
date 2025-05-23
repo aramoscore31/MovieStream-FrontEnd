@@ -37,7 +37,7 @@ export const ComingSoonStyles = StyleSheet.create({
   event: {
     flexDirection: 'row',
     marginBottom: 20,
-    backgroundColor: '#34495e',
+    backgroundColor: '#2C2C2C',
     borderRadius: 10,
     padding: 15,
     alignItems: 'center',
@@ -171,6 +171,12 @@ export const ComingSoonStyles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  successText: {  // Este es el nuevo estilo que has mencionado
+    color: 'green',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginVertical: 10,
   },
 
   completedButtonPressed: {

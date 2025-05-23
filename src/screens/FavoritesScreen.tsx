@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, Fontisto } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { ComingSoonStyles } from '../css/ComingSoonStyles';
@@ -121,7 +121,7 @@ const FavoritesScreen = () => {
           </View>
         </View>
         <TouchableOpacity onPress={() => handleRemoveFavorite(item.id)} style={ComingSoonStyles.favoriteIcon}>
-          <FontAwesome name="star" size={25} color="red" />
+          <Fontisto name="favorite" size={35} color="red" top={-59} right={10} />
         </TouchableOpacity>
       </TouchableOpacity>
     );

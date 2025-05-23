@@ -13,6 +13,7 @@ import EditEventScreen from '@/src/screens/EditEventScreen';
 import { MovieData } from '../types/movieTypes';
 import OrganizerRequestScreen from '@/src/screens/OrganizerRequestScreen';
 import MovieDetails from '@/src/screens/MovieDetails';
+import VideoPlayerScreen from '@/src/screens/VideoPlayerScreen';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -29,6 +30,7 @@ export type RootStackParamList = {
   Categories: undefined;
   EventsByCategoryScreen: { category: any };
   AdminPanel: undefined;
+  VideoPlayer: { videoUrl: string };
   EditEvent: { eventId: number };
   OrganizerRequestScreen: undefined;
   MovieDetails: { movie: MovieData };
@@ -51,6 +53,8 @@ export default function AppNavigator() {
         <Stack.Screen name="AdminPanel" component={AdminPanel} />
         <Stack.Screen name="EditEvent" component={EditEventScreen} />
         <Stack.Screen name="OrganizerRequestScreen" component={OrganizerRequestScreen} />
+        <Stack.Screen name="VideoPlayer" component={VideoPlayerScreen} />
+
       </Stack.Navigator>
     </FavoritesProvider>
   );
