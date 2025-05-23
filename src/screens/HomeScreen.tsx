@@ -52,6 +52,12 @@ const HomeScreen = () => {
 
   const opacity = useState(new Animated.Value(1))[0];
 
+  // Función para obtener la clave de favoritos de un usuario específico
+  const getFavoritesKey = (username: string | null) => {
+    return username ? `favorites_${username}` : 'favorites';
+  };
+
+  // Cargar las películas
   const fetchMovies = async () => {
     try {
       const response = await fetch('http://192.168.1.87:8080/movies/list');
@@ -69,27 +75,22 @@ const HomeScreen = () => {
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchMovies();
-    }, [])
-  );
+  // Cargar favoritos del usuario específico desde AsyncStorage
   useEffect(() => {
     const loadFavorites = async () => {
-      try {
-        const storedFavorites = await AsyncStorage.getItem('favorites');
+      if (username) {
+        const storedFavorites = await AsyncStorage.getItem(getFavoritesKey(username));
         if (storedFavorites) {
           setFavorites(JSON.parse(storedFavorites));
         }
-      } catch (error) {
-        console.error('Error al cargar los favoritos:', error);
       }
     };
 
-    loadFavorites(); // Cargar los favoritos
-    fetchMovies();   // Cargar las películas
-  }, []);
+    loadFavorites();
+    fetchMovies();  // Cargar las películas
+  }, [username]); // Cuando el username cambie, recarga los favoritos
 
+  // Guardar los favoritos actualizados en AsyncStorage
   const toggleFavorite = async (movie: MovieData) => {
     let updatedFavorites = [...favorites];
     const movieIndex = favorites.findIndex(fav => fav.id === movie.id);
@@ -101,14 +102,15 @@ const HomeScreen = () => {
     }
 
     try {
-      // Guardar los favoritos actualizados en AsyncStorage
-      await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+      const favoritesKey = getFavoritesKey(username);
+      await AsyncStorage.setItem(favoritesKey, JSON.stringify(updatedFavorites));
       setFavorites(updatedFavorites);  // Actualizar el estado local
     } catch (error) {
       console.error('Error al guardar los favoritos:', error);
     }
   };
 
+  // Cargar los datos del usuario (nombre y rol)
   useEffect(() => {
     const loadUserData = async () => {
       const storedUsername = await AsyncStorage.getItem('username');
@@ -120,7 +122,7 @@ const HomeScreen = () => {
     };
 
     loadUserData();
-  }, []);
+  }, []); // Solo se carga al iniciar la pantalla
 
   const handleMoviePress = (item: MovieData) => () => {
     navigation.navigate('MovieDetails', { movie: item });
@@ -151,19 +153,6 @@ const HomeScreen = () => {
     );
   };
 
-  const startBlinking = () => {
-    Animated.loop(
-      Animated.sequence([ 
-        Animated.timing(opacity, { toValue: 0.5, duration: 1000, useNativeDriver: true }),
-        Animated.timing(opacity, { toValue: 1, duration: 1000, useNativeDriver: true }),
-      ])
-    ).start();
-  };
-
-  useEffect(() => {
-    startBlinking();
-  }, []);
-
   return (
     <View style={styles.container}>
       <View style={styles.fixedHeader}>
@@ -193,7 +182,7 @@ const HomeScreen = () => {
         numColumns={3}
         renderItem={renderMovieItem}
       />
-
+      
       <View style={styles.fixedBottomNav}></View>
     </View>
   );

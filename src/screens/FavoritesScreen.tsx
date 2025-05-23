@@ -58,15 +58,23 @@ const FavoritesScreen = () => {
   const [error, setError] = useState<string | null>(null);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [username, setUsername] = useState<string | null>(null);
-  const [role, setRole] = useState<string | null>(null);
+
+  // Función para obtener la clave de favoritos de un usuario específico
+  const getFavoritesKey = (username: string | null) => {
+    return username ? `favorites_${username}` : 'favorites';
+  };
 
   const fetchFavorites = async () => {
     setLoading(true);
     setError(null);
     try {
-      const storedFavorites = await AsyncStorage.getItem('favorites');
-      if (storedFavorites) {
-        setFavorites(JSON.parse(storedFavorites));
+      const storedUsername = await AsyncStorage.getItem('username');
+      if (storedUsername) {
+        const favoritesKey = getFavoritesKey(storedUsername);
+        const storedFavorites = await AsyncStorage.getItem(favoritesKey);
+        if (storedFavorites) {
+          setFavorites(JSON.parse(storedFavorites));
+        }
       }
     } catch (error) {
       setError('Error loading favorites');
@@ -76,15 +84,12 @@ const FavoritesScreen = () => {
   };
 
   useEffect(() => {
-    fetchFavorites();
-
     const getUserData = async () => {
       const storedUsername = await AsyncStorage.getItem('username');
-      const storedRole = await AsyncStorage.getItem('role');
       if (storedUsername) setUsername(storedUsername);
-      if (storedRole) setRole(storedRole);
     };
     getUserData();
+    fetchFavorites(); // Cargar los favoritos después de obtener el username
   }, []);
 
   const handleRemoveFavorite = async (movieId: number) => {
@@ -92,7 +97,11 @@ const FavoritesScreen = () => {
     setFavorites(updatedFavorites);
 
     try {
-      await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+      const storedUsername = await AsyncStorage.getItem('username');
+      if (storedUsername) {
+        const favoritesKey = getFavoritesKey(storedUsername);
+        await AsyncStorage.setItem(favoritesKey, JSON.stringify(updatedFavorites));
+      }
     } catch (error) {
       console.error('Error saving favorites:', error);
     }
